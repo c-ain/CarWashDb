@@ -1,0 +1,62 @@
+import React, { Component } from 'react';
+import './App.css';
+import {BrowserRouter as Router,  Route, Link, Switch } from "react-router-dom"
+import AddCar from './components/AddCar';
+import Search from './components/Search';
+import Department from './components/Department';
+import Home from './components/Home';
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: [],
+      isLoaded: false
+    }
+  }
+  componentDidMount(){
+    fetch('http://localhost:8000/cars')
+    .then(res=> res.json())
+    .then(json=> {
+      this.setState({
+        isLoaded: true,
+        items: json
+      })
+    });
+  }
+  render() {
+    var {isLoaded, items} = this.state;
+  //  if(!isLoaded){
+   //   return <div>Loading...</div>;
+    
+    return (
+      <div className="App">
+      <Router>
+        <div>
+            <Link to="/">Home</Link>{' '}
+            <Link to="/addCar">New entry</Link>{' '}
+            <Link to="/search">Find cars</Link>{' '}
+            <Link to="/department">Show by department</Link>{' '}
+
+            <switch>
+              <route exact path="/" component={Home} />
+              <route path="/addCar" component={AddCar} />
+              <route path="/search" component={Search} />
+              <route path="/department" component={Department} />
+            </switch>
+            
+        </div>
+      </Router>
+        <ul>
+            {items.map(item =>(
+            <li key="{item.id}">
+              Plate: {item.title} | Model: {item.text}
+            </li>
+            ))}
+        </ul>
+      </div>
+    );
+  }
+}
+
+export default App;
